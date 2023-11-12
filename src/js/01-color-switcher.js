@@ -7,6 +7,7 @@ let intervalId;
     function startColorChange() {
       if (!intervalId) {
         document.querySelector('[data-start]').disabled = true;
+        document.querySelector('[data-stop]').disabled = false;
         intervalId = setInterval(() => {
           document.body.style.backgroundColor = getRandomHexColor();
         }, 1000);
@@ -16,6 +17,7 @@ let intervalId;
     function stopColorChange() {
       clearInterval(intervalId);
       document.querySelector('[data-start]').disabled = false;
+      document.querySelector('[data-stop]').disabled = true;
       intervalId = null;
     }
 
