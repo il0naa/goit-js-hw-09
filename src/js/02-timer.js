@@ -14,13 +14,14 @@ function convertMs(ms) {
     const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
     return { days, hours, minutes, seconds };
-};
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     const startButton = document.querySelector('[data-start]');
     const datetimePicker = document.querySelector('#datetime-picker');
     const countdownTimer = document.querySelector('.timer');
 
+    let selectedDate;
     startButton.disabled = true;
 
     const options = {
@@ -29,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function () {
         defaultDate: new Date(),
         minuteIncrement: 1,
         onClose(selectedDates) {
-            const selectedDate = selectedDates[0];
+            selectedDate = selectedDates[0];
             if (selectedDate < new Date()) {
-                window.alert("Please choose a date in the future");
+                window.alert('Please choose a date in the future');
                 startButton.disabled = true;
             } else {
                 startButton.disabled = false;
@@ -55,15 +56,16 @@ function startCountdown(targetDate) {
 
         const { days, hours, minutes, seconds } = convertMs(difference);
 
+        if (difference <= 0) {
+            clearInterval(timerInterval);
+            startButton.disabled = true;
+            return;
+        }
+
         daysElement.textContent = formatTime(days);
         hoursElement.textContent = formatTime(hours);
         minutesElement.textContent = formatTime(minutes);
         secondsElement.textContent = formatTime(seconds);
-
-        if (difference <= 0) {
-            clearInterval(timerInterval);
-            startButton.disabled = true;
-        }
     }
 
     function formatTime(time) {
@@ -77,7 +79,6 @@ function startCountdown(targetDate) {
 }
 
     startButton.addEventListener('click', function () {
-        const selectedDate = flatpickr(datetimePicker).selectedDates[0];
         if (selectedDate) {
             startCountdown(selectedDate);
         }
