@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const datetimePicker = document.querySelector('#datetime-picker');
     const countdownTimer = document.querySelector('.timer');
 
+    startButton.disabled = true;
+
     const options = {
         enableTime: true,
         time_24hr: true,
@@ -39,39 +41,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
     flatpickr(datetimePicker, options);
 
-    function startCountdown(targetDate) {
-        const daysElement = countdownTimer.querySelector('[data-days]');
-        const hoursElement = countdownTimer.querySelector('[data-hours]');
-        const minutesElement = countdownTimer.querySelector('[data-minutes]');
-        const secondsElement = countdownTimer.querySelector('[data-seconds]');
+function startCountdown(targetDate) {
+    const daysElement = countdownTimer.querySelector('[data-days]');
+    const hoursElement = countdownTimer.querySelector('[data-hours]');
+    const minutesElement = countdownTimer.querySelector('[data-minutes]');
+    const secondsElement = countdownTimer.querySelector('[data-seconds]');
 
-        datetimePicker.disabled = true;
+    datetimePicker.disabled = true;
 
-        function updateTimer() {
-            const now = new Date().getTime();
-            const difference = targetDate - now;
+    function updateTimer() {
+        const now = new Date().getTime();
+        const difference = targetDate.getTime() - now;
 
-            const { days, hours, minutes, seconds } = convertMs(difference);
+        const { days, hours, minutes, seconds } = convertMs(difference);
 
-            daysElement.textContent = formatTime(days);
-            hoursElement.textContent = formatTime(hours);
-            minutesElement.textContent = formatTime(minutes);
-            secondsElement.textContent = formatTime(seconds);
+        daysElement.textContent = formatTime(days);
+        hoursElement.textContent = formatTime(hours);
+        minutesElement.textContent = formatTime(minutes);
+        secondsElement.textContent = formatTime(seconds);
 
-            if (difference < 0) {
-                clearInterval(timerInterval);
-                startButton.disabled = true;
-            }
+        if (difference <= 0) {
+            clearInterval(timerInterval);
+            startButton.disabled = true;
         }
-
-        function formatTime(time) {
-            return time < 10 ? `0${time}` : time;
-        }
-
-        updateTimer();
-
-        const timerInterval = setInterval(updateTimer, 1000);
     }
+
+    function formatTime(time) {
+        return time < 10 ? `0${time}` : `${time}`;
+    }
+    
+
+    updateTimer();
+
+    const timerInterval = setInterval(updateTimer, 1000);
+}
 
     startButton.addEventListener('click', function () {
         const selectedDate = flatpickr(datetimePicker).selectedDates[0];
@@ -79,4 +82,4 @@ document.addEventListener('DOMContentLoaded', function () {
             startCountdown(selectedDate);
         }
     });
-});
+}); 

@@ -9,7 +9,7 @@ function createPromise(position, delay) {
       }
     }, delay);
   });
-};
+}
 
 document.querySelector('.form').addEventListener('submit', function (event) {
   event.preventDefault();
@@ -23,25 +23,24 @@ document.querySelector('.form').addEventListener('submit', function (event) {
   const step = parseInt(stepInput.value);
   const amount = parseInt(amountInput.value);
 
-  const promises = [];
+  function processPromise(index) {
+    if (index > amount) {
+      return;
+    }
 
-  for (let i = 1; i <= amount; i++) {
-    const delay = initialDelay + (i - 1) * step;
-    promises.push(createPromise(i, delay));
+    const delay = initialDelay + (index - 1) * step;
+
+    createPromise(index, delay)
+      .then(result => {
+        console.log(`✅ Проміс ${result.position} виконано за ${result.delay}мс`);
+        processPromise(index + 1);
+      })
+      .catch(error => {
+        console.log(`❌ Проміс ${error.position} відхилено за ${error.delay}мс`);
+        processPromise(index + 1);
+      });
   }
 
-  Promise.allSettled(promises)
-    .then(results => {
-      results.forEach(result => {
-        if (result.status === 'fulfilled') {
-          console.log(`✅ Fulfilled promise ${result.value.position} in ${result.value.delay}ms`);
-        } else {
-          console.log(`❌ Rejected promise ${result.reason.position} in ${result.reason.delay}ms`);
-        }
-      });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+  processPromise(1);
 });
 
