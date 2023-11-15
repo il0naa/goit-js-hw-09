@@ -29,7 +29,7 @@ function createFunctions(objData) {
 }
 
 function createPromise(position, delay) {
-  return new Promise((resolve, rejact) => {
+  return new Promise((resolve, reject) => {
     const shouldResolve = Math.random() > 0.3;
     const obj = {
       position,
@@ -39,10 +39,9 @@ function createPromise(position, delay) {
       if (shouldResolve) {
         resolve(obj);
       } else {
-        rejact(obj);
+        reject(obj);
       }
     }, delay);
   });
-} 
-
+}
 
